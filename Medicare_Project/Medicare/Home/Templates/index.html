@@ -98,8 +98,13 @@
                 <input type="search" placeholder="Search">
                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
               </form>
+              <div id="userSection" style="display: none;">
+                <!-- User data will be displayed here -->
+                <p>Welcome, <span id="username"></span>!</p>
+                <button onclick="logout()">Logout</button>
+            </div>
               <div class="login_btn-contanier ml-0 ml-lg-5">
-                <a href="">
+                <a href="{% url 'login' %}">
                   <img src="{% static 'images/user.png' %}" alt="">
                   <span>
                     Login
@@ -1212,6 +1217,31 @@
         }
       }
     });
+  </script>
+
+  <script>
+    
+    function extractUsernameFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username');
+            return username;
+        }
+
+        function fetchUserData() {
+            const username = extractUsernameFromURL();
+
+            // Display the username in the user section
+            if (username) {
+                document.getElementById("username").textContent = username;
+                document.getElementById("userSection").style.display = "block";
+            } else {
+                // Failed to extract the username, handle accordingly (e.g., redirect to login page)
+                window.location.href = "http://127.0.0.1:8001/login.html";
+            }
+        }
+
+        // Call fetchUserData() when the home page is loaded
+        fetchUserData();
   </script>
 </body>
 

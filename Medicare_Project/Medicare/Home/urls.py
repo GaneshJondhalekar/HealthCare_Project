@@ -19,4 +19,5 @@ from . import views
 
 urlpatterns = [
     path('index/',views.Index),
+    path('login/',views.Login,name='login'),
 ]

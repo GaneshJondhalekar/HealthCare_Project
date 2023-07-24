@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import datetime
-from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x_)tm(gg=r(gwuc2!e%9*+4dy=-6cx(s()@a9(ub9h+ubr#7m9'
+SECRET_KEY = 'django-insecure-6z%cv=ened*wc_g0ycn!+mh1^g$pq_qdu2iedd!crbz$5dll1$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,32 +38,31 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Patients',
-    'rest_framework'
+    'rest_framework',
 ]
 
+AUTH_USER_MODEL = 'Patients.Patient'
+AUTHENTICATION_BACKENDS = ['Patients.backends.CustomPatientBackend','django.contrib.auth.backends.ModelBackend',]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',  # Optional: include other authentication classes as needed
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
-
-JWT_AUTH = {
-    'JWT_SECRET_KEY': get_random_secret_key(),  # Replace with your own secret key
-    'JWT_ALGORITHM': 'HS256',
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),  # Set the token expiration time
-    'JWT_ALLOW_REFRESH': True,  # Allow token refreshing
-}
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:8001',
+    # Add any other domains that need to access the API.
 ]
 
 ROOT_URLCONF = 'Accounts.urls'
