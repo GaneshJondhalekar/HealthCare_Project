@@ -3,7 +3,7 @@ from .models import Patient
 
 class CustomPatientBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None):
-        print("hi.....................")
+        print("hi...................patin..")
         try:
             user = Patient.objects.get(email=email)
 

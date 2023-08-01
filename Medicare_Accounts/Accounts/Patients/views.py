@@ -1,11 +1,16 @@
 from django.shortcuts import render
 from .models import Patient
-from .serializers import PatientRegistrationSerializer,PatientLoginSerializer
+from .serializers import PatientRegistrationSerializer,PatientLoginSerializer,DemoSerializer
 from rest_framework import views,viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate,login
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsPatientUser
+
 # Create your views here.
 
 class PatientRegistrationViewset(viewsets.ModelViewSet):
@@ -17,27 +22,20 @@ class PatientRegistrationViewset(viewsets.ModelViewSet):
         if serializer.is_valid(raise_exception=True):
             patient=serializer.save()
             patient.set_password(serializer.validated_data['password'])
+            patient.user_type='patient'
             patient.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-class PatientLoginView(views.APIView):
-    serializer_class=PatientLoginSerializer
-    
-    def post(self,request):
-
-        serializer=self.serializer_class(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            email=serializer.validated_data['email']
-            password=serializer.validated_data['password']
-            user=authenticate(request,username=email,password=password)
-            if user is not None:
-                login(request,user)
-                refresh=RefreshToken.for_user(user)
-                return Response({'Success':'Login Successful','refresh':str(refresh),'access_token':str(refresh.access_token)})
-            else:
-                 return Response({'Failed':'Username or password incorrect'})
-        return Response(serializer.errors)
+#@method_decorator(login_required,name='dispatch')
+class demo(views.APIView):
+    serializer_class=DemoSerializer
+    permission_classes=[IsPatientUser]
+    def get(self,request):
+        p=Patient.objects.all()
+        serializer=self.serializer_class(p,many=True)
+        print(request.user)
+        return Response(serializer.data)
 
     
         
