@@ -10,3 +10,7 @@ class PatientLoginSerializer(serializers.Serializer):
     email=serializers.EmailField()
     password=serializers.CharField()
     
+class DemoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Patient
+        fields=['name','email']

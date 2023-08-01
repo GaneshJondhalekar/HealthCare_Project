@@ -2,11 +2,11 @@ from django.contrib.auth.backends import ModelBackend
 from .models import Pharma
 
 class CustomPharmaBackend(ModelBackend):
-    def authenticate(self, request, email=None, password=None):
-        print("hi.....................")
+    def authenticate(self, request,username=None, password=None):
+        print("hi...................p..")
         try:
-            user = Pharma.objects.get(email=email)
-
+            user = Pharma.objects.get(email=username)
+            user.backend='Pharma.backends.CustomPharmaBackend'
             if user.check_password(password):
                 return user
         except Pharma.DoesNotExist:

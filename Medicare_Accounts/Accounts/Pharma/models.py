@@ -24,6 +24,7 @@ class Pharma(AbstractBaseUser,PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     groups=models.ForeignKey(Group,on_delete=models.CASCADE,null=True,related_name='group_pharma')
     user_permissions=models.ForeignKey(Permission,on_delete=models.CASCADE,null=True,related_name='permissions_pharma')
+    user_type=models.CharField(default='pharma',max_length=10)
     
     objects = PharmaManager()
     
@@ -32,4 +33,10 @@ class Pharma(AbstractBaseUser,PermissionsMixin):
 
     def __str__(self):
         return self.name
+
+    def is_patient(self):
+        return self.user_type == 'patient'
+
+    def is_pharma(self):
+        return self.user_type == 'pharma'
     
