@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import ProductAddView,ProductListView,ProductDetailView
+from .views import ProductAddView,ProductListView,ProductDetailView,AddProductToCartView,MyCartView
 
 urlpatterns = [
    path('add/',ProductAddView.as_view(),name='add_product'),
    path('lists/',ProductListView.as_view(),name='list_product'),
-   path('list/<int:id>/',ProductDetailView.as_view(),name='product_details')
+   path('list/<int:id>/',ProductDetailView.as_view(),name='product_details'),
+   path('addTocart/',AddProductToCartView.as_view(),name='add_cart'),
+   path('mycart/',MyCartView.as_view(),name='my_cart'),
 ]
