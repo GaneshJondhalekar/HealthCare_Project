@@ -26,3 +26,26 @@ class CartItems(models.Model):
 
 
 
+class Order(models.Model):
+    
+    user=models.ForeignKey(Patient, on_delete=models.CASCADE)
+    payment_status=models.CharField(max_length=20,choices=(
+        ('PENDING', 'Pending'),
+        ('COMPLETED', 'Completed'),
+        ('FAILED', 'Failed'),
+       
+    ))
+    status = models.CharField(max_length=20, choices=(
+        ('PENDING', 'Pending'),
+        ('PROCESSING', 'Processing'),
+        ('SHIPPED', 'Shipped'),
+        ('DELIVERED', 'Delivered'),
+        ('CANCELLED', 'Cancelled'),
+    ))
+    total_price=models.DecimalField(max_digits=7,decimal_places=2)
+
+class OrderItem(models.Model):
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='items')
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    quantity=models.IntegerField(default=1)
+    subtotal=models.DecimalField(max_digits=7,decimal_places=2)

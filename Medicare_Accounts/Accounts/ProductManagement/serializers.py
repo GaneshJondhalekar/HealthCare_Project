@@ -1,4 +1,4 @@
-from .models import Product,CartItems,Cart
+from .models import Product,CartItems,Cart,Order,OrderItem
 from rest_framework import serializers
 
 class ProductAddSerializer(serializers.ModelSerializer):
@@ -30,6 +30,11 @@ class ProductSerializer(serializers.ModelSerializer):
         fields=['name','price']
 
 
+class ProductDetailsSerializer(serializers.ModelSerializer):
+    product=ProductSerializer()
+    class Meta:
+        model=CartItems
+        fields=['product','quantity']
 
 class CartItemSerializer(serializers.ModelSerializer):
     product=ProductSerializer(many=False)
@@ -46,8 +51,25 @@ class MyCartSerializer(serializers.ModelSerializer):
     final_total=serializers.SerializerMethodField(method_name='Final_total')
     class Meta:
         model=Cart
-        fields=['id','items','final_total']
+        fields=['user','items','final_total']
 
     def Final_total(self,cart:Cart):
         items=cart.items.all()
         return sum([item.quantity*item.product.price for item in items])
+
+class PlaceOrderSerializer(serializers.Serializer):
+    cart_id = serializers.IntegerField(required=True)
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product=ProductSerializer(many=False)
+    class Meta:
+        model=OrderItem
+        fields=['product','quantity','subtotal']
+
+
+class MyOrderSerializer(serializers.ModelSerializer):
+    items=OrderItemSerializer(many=True)
+    class Meta:
+        model=Order
+        fields=['user','items','total_price','payment_status','status']
